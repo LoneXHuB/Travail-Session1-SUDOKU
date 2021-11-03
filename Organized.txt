@@ -1,0 +1,13 @@
+1 - introduction : But du projet , techno
+2 - principes oriente objet :
+    1.1 solide : 
+        ex1 : SingleRes Tile.cs
+        ex2 : open/closed : nimporte quelle classe fera ltruc
+        ex3 : substitution : Binary persistance can replace(substitute) filePersistance without breaking gameManagers code
+        ex4 : interfaceSegregation : unity follows a Component based architecture, so everything is a small modular component that implements monoMonoBehaviour to be able to be attached to GameObjects and control their behaviour
+        ex5 : dependency injection : IPersistance (the use of IPersistance in GameManager class lets us inject any type of class instance that implements that interface(IPersistance) so in order to change the behaviour we just inject a diffrent class instance with the only constraint being that class must implement I persistance)
+    1.2 grasp :
+        ex1 : Specialiste : GridBloc.cs knows everything about the blocs inside it so analysing itself is her responsability
+        ex2 : Createur : Grid knows where blocs should be so in our code the grid creats blocks and assigns their positions
+        ex3 : controleur : Big tile verifies if the data that the user wants to pass to the tile is correct before passing it to the tile so its a DAO(dataAccessObject)
+3 - Test Unitaires 
