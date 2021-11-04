@@ -1,10 +1,17 @@
+
+#if UNITY_EDITOR
+#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sudoku;
+using USudoku;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace TestSudoku
 {
+ 
+
+ 
+
     [TestClass]
     public class TestSudoku
     {
@@ -36,4 +43,6 @@ namespace TestSudoku
             => Assert.AreEqual(false, Tile.CheckDoubles(Build(1, 1, 1, 1, 1, 1, 1, 1, 1)));
         
     }
+    
 }
+#endif
