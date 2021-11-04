@@ -8,9 +8,7 @@ using System.Linq;
 
 namespace TestSudoku
 {
- 
 
- 
 
     [TestClass]
     public class TestSudoku
