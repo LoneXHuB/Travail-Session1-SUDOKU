@@ -49,22 +49,36 @@ namespace LoneX.UQTR.Sudoku
         public void OnValueChanged(string _newVal)
         {
             var _noDoubles = _newVal.ToList().Distinct().Count() == _newVal.Length;
+            var _selectedTiles = TileSelector.SelectedTiles;
             if(!_noDoubles) 
             {
-                var _trimmed = BigTile.instance.CurrentTile.Note.Content.ToString();
-                input.SetTextWithoutNotify(_trimmed);
+                if(_selectedTiles.Count == 1)
+                input.SetTextWithoutNotify(_selectedTiles[0].Note.Content.ToString());
                 return;
             }
 
             if(Int32.TryParse(_newVal , out int _newValue))
             {
-                BigTile.instance.CurrentTile.SetNote(_newValue);  
+                var _from = new int[_selectedTiles.Count];
+                var _to = new int[_selectedTiles.Count];
+
+                for(int i = 0; i < _selectedTiles.Count ; i++) 
+                {
+                    _from[i] = _selectedTiles[i].Note.Content;
+                    _to[i] = _newValue;
+                }
+                var _commande = new GenericCommand<int>(_selectedTiles.ToArray(), SetNoteValue, _from , _to);
+                CommandInvoker.Instance.Execute(_commande);
             }
         }
        #endregion
 
        
        #region PrivateMethods
+        private void SetNoteValue(object[] _sources, int[] values)
+        {
+            for(int i = 0; i < _sources.Length ; i++) ((Tile)_sources[i]).SetNote(values[i]);
+        }
        #endregion
     }
    

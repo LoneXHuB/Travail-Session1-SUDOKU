@@ -8,13 +8,13 @@ namespace LoneX.UQTR.Sudoku
     public class MaterialAnimator : MonoBehaviour
     {
        #region PublicAttributes
-        public static MaterialAnimator selected;
        #endregion
 
        #region PrivateAttributes
         [SerializeField]
         private Vector3 endScale;
         private Material material;
+        private bool isDisabled;
 
         [SerializeField , ColorUsage(true, true)]
         private Color beginColor , hoverColor ,disabledColor , selectedColor , wrongColor , rightColor , correctColor;
@@ -46,6 +46,14 @@ namespace LoneX.UQTR.Sudoku
                 material.SetFloat("_Intensity" , value);
             }).setLoopPingPong();
         }
+        public void BaseColorUpdate(Color color)
+        {
+            correctColor = color;
+            beginColor = color;
+            Debug.Log("BaseColorUpdate Called");
+            ChangeScaleAndColor(correctColor , endScale);
+        }
+        public Color GetCurrentBaseColor() => correctColor;
         public void OnWrong()
         {
             ChangeScaleAndColor(wrongColor , endScale);
@@ -57,36 +65,38 @@ namespace LoneX.UQTR.Sudoku
         public void Dimmer()
         {
             material.color = disabledColor;
+            isDisabled = true;
         }
         public void OnSelect()
         {
-            if(selected!=null)
-                selected.OnUnselected();
-
             ChangeScaleAndColor(selectedColor , endScale);
-            selected = this;
         }
         public void OnUnselected()
         {
-            selected = null;
-            ChangeScaleAndColor(beginColor , Vector3.one);
+            var _current = GetComponent<Image>().materialForRendering.color;
+            GameManager.instance.CheckGameState();
+            if(!_current.Equals(wrongColor))
+                ChangeScaleAndColor(beginColor , Vector3.one);
         }
         public void OnHover()
         {
-            ChangeScaleAndColor(hoverColor , endScale);
+            var _current = GetComponent<Image>().materialForRendering.color;
+            if(_current != selectedColor)
+                ChangeScaleAndColor(hoverColor , endScale);
         }
 
         public void EndHover()
         {
-            ChangeScaleAndColor(beginColor , Vector3.one);
+            var _current = GetComponent<Image>().materialForRendering.color;
+            if(_current != selectedColor)
+                ChangeScaleAndColor(beginColor , Vector3.one);
         }
 
         public void ChangeScaleAndColor( Color colorB, Vector3 scaleB)
         {
+            if(isDisabled) return;
             var _current = GetComponent<Image>().materialForRendering.color;
             if(_current.Equals(wrongColor) && colorB != correctColor) return;
-            if(selected == this  && !colorB.Equals(wrongColor) && colorB != correctColor) return;
-            
             
             LeanTween.scale(gameObject, scaleB , .75f);
             LeanTween.value(gameObject, .1f, 1f, .25f)

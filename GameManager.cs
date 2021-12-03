@@ -23,12 +23,20 @@ namespace LoneX.UQTR.Sudoku
        #endregion
 
        #region MonoCallbacks
-       //new GameManager(new BinaryPersistance()); 
-       // var gm = new GameManager( new FilePersistance());
-        // gm.LoadGame(fileName);
         public GameManager(IPersistance _persistance)
         {
             persistance = _persistance;
+        }
+        public void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.U))
+            {
+                CommandInvoker.Instance.Undo();
+            }
+            if(Input.GetKeyDown(KeyCode.R))
+            {
+                CommandInvoker.Instance.Redo();
+            }
         }
         public void Awake()
         {
@@ -110,8 +118,6 @@ namespace LoneX.UQTR.Sudoku
                 i++;    
             }
         }
-        //0     1     2     3    4    5    6 7 8 9
-        //0123  4567 891011 
        #endregion
 
        

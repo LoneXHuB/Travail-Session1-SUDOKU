@@ -50,15 +50,33 @@ namespace LoneX.UQTR.Sudoku
         {
             if(Int32.TryParse(_newVal , out int _newValue))
             {
-                var _helperChanged = BigTile.instance.CurrentTile.SetHelperValue( id , _newValue);
-                if(!_helperChanged)
-                    GetComponent<TMP_InputField>().text = BigTile.instance.GetHelperValue(id).ToString();
+                var _selectedTiles = TileSelector.SelectedTiles;
+                var _from = new int[_selectedTiles.Count + 1];
+                var _to = new int[_selectedTiles.Count + 1];
+                _from[_selectedTiles.Count] = id;
+                _to[_selectedTiles.Count] = id;
+                for(int i = 0; i < _selectedTiles.Count ; i++)
+                {
+                    _from[i] = _selectedTiles[i].Subtiles[id].content;
+                    _to[i] = _newValue;
+                }
+                var _commande = new GenericCommand<int>(_selectedTiles.ToArray(), SetHelperValue, _from , _to);
+                CommandInvoker.Instance.Execute(_commande);
+                GetComponent<TMP_InputField>().text = _newValue.ToString();
             }
         }
        #endregion
 
-       
        #region PrivateMethods
+        private void SetHelperValue(object[] _sources, int[] _values)
+        {
+            var _id = _values[_sources.Length];
+            for(int i = 0; i < _sources.Length ; i++)
+            {
+                ((Tile) _sources[i]).SetHelperValue(_id , _values[i]);
+                Debug.Log("Tile: "+(Tile)_sources[i]+" undoing Id : " + _id + "value : " + _values[i]);
+            }
+        }
        #endregion
     }
 

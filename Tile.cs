@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using TMPro;
+using System;
 
 namespace LoneX.UQTR.Sudoku
 {
@@ -14,6 +15,7 @@ namespace LoneX.UQTR.Sudoku
        #endregion
 
        #region PublicAttributes
+        public static event EventHandler TileSelected;
         public Note Note{get; private set;}
         public bool NoteMode{ get; private set;}
         public int Value 
@@ -23,8 +25,7 @@ namespace LoneX.UQTR.Sudoku
             { 
                 if(! isBigTile)
                 {
-                    valueText.text = value == 0 ? "":value.ToString();
-                    tileValue = value;
+                    UpdateTile(value);
                 }
             }
         }
@@ -55,7 +56,6 @@ namespace LoneX.UQTR.Sudoku
         private MPosition mPosition = new MPosition(-1,-1);
        #endregion
 
-       
        #region MonoCallbacks
         void Start()
         {
@@ -74,6 +74,14 @@ namespace LoneX.UQTR.Sudoku
                 var _subtile = _subTileObjectInstance.GetComponent<SubTile>();
                 Subtiles.Add(_subtile);
             }
+        }
+       #endregion
+
+       #region PrivateMethods
+        private void UpdateTile(int value)
+        {
+            valueText.text = value == 0 ? "":value.ToString();
+            tileValue = value;
         }
        #endregion
 
@@ -127,13 +135,15 @@ namespace LoneX.UQTR.Sudoku
         public bool SetHelperValue(int _index , int _value)
         {
             foreach(SubTile _s in Subtiles)
-            if(_s.Content == _value) return false;
+            if(Subtiles[_index].Content != _s.Content)
+            if(_s.Content == _value) 
+            return false;
 
+            Debug.Log("setting helpers for TIle : " + this.mPosition.XRow + "," + mPosition.YLine);
             Subtiles[_index].SetContent(_value);
             return true;
         }
         public void SetMPosition(int _x , int _y) => mPosition = new MPosition(_x,_y);
-
         public void SetValue(int _value)
         {
             if(!IsImmutable) Value = _value;
@@ -142,13 +152,13 @@ namespace LoneX.UQTR.Sudoku
         public void OnClick()
         {
             if(IsImmutable) return;
-            BigTile.instance.SetCurrent(this);
-            BigTile.instance.Focus();
-            if(NoteMode)
-                BigTile.instance.NoteMode();
-            else
-                BigTile.instance.ValueMode();
+            animator.OnSelect();
+            TileSelected(this,EventArgs.Empty);
         }
+        public void Deselect() => animator.OnUnselected();
+        public void Select() => animator.OnSelect();
+        public void BaseColorUpdate(Color _color) => animator.BaseColorUpdate(_color);
+        public Color GetCurrentBaseColor() => animator.GetCurrentBaseColor();
         public MPosition GetPosition() => new MPosition (mPosition.XRow , mPosition.YLine);
         public void HideValueText() => valueText.gameObject.SetActive(false);
         public void ShowValueText() => valueText.gameObject.SetActive(true);
