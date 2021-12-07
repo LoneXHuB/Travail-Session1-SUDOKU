@@ -101,6 +101,12 @@ namespace LoneX.UQTR.Sudoku
             foreach(Bloc b in grid.Blocs)
             foreach(Tile t in b.Tiles)
             {
+                try
+                {
+                    var _color = new Color(_data.r[i],_data.g[i],_data.B[i],_data.a[i]);
+                    t.BaseColorUpdate(_color);
+                }
+                catch{}
                 var _s0 = _data.subtiles[i + i*3];
                 var _s1 = _data.subtiles[i + 1 + i*3];
                 var _s2 = _data.subtiles[i + 2 + i*3];
