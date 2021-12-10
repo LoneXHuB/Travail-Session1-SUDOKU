@@ -168,7 +168,7 @@ namespace LoneX.UQTR.Sudoku
        #region overrides
         public override bool Equals(object obj)
         {
-            if(obj == null || !(obj is Tile))
+            if(obj == null || ! (obj is Tile))
                 return false;
             return ((Tile) obj).Value == this.Value && ((Tile) obj).mPosition == this.mPosition;
         }

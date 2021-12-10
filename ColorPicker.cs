@@ -65,7 +65,6 @@ namespace LoneX.UQTR.Sudoku
                 _from[i] = _selectedTiles[i].GetCurrentBaseColor();
                 _to[i] = fcp.color;
             }
-
             //CODE pour pouvoir UNDO une commande j'ai 
             var _commande = new GenericCommand<Color>(_selectedTiles.ToArray(), UpdateColor, _from, _to);
             CommandInvoker.Instance.Execute(_commande);
