@@ -50,7 +50,6 @@ namespace LoneX.UQTR.Sudoku
         {
             correctColor = color;
             beginColor = color;
-            Debug.Log("BaseColorUpdate Called");
             ChangeScaleAndColor(correctColor , endScale);
         }
         public Color GetCurrentBaseColor() => correctColor;
@@ -104,13 +103,10 @@ namespace LoneX.UQTR.Sudoku
                 material.color = Color.Lerp(_current , colorB , value);
             } ).setEaseInSine();
         }
-        public void BrightBlink()
-        {
-            LeanTween.value(gameObject , 1f , 5f , .15f).setOnUpdate((value)=>{ material.SetFloat("_Intensity",value);});
-        }
+        
+        public void BrightBlink() => LeanTween.value(gameObject , 1f , 5f , .15f).setOnUpdate((value)=>{ material.SetFloat("_Intensity",value);});
        #endregion
 
-       
        #region PrivateMethods
        #endregion
     }

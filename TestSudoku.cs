@@ -1,11 +1,14 @@
+#if UNITY_EDITOR
+#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LoneX.UQTR.Sudoku;
 
 namespace TestSudoku
 {
+
+
     [TestClass]
     public class TestSudoku
     {
@@ -42,6 +45,17 @@ namespace TestSudoku
             => Assert.AreEqual(false, Tile.CheckDoubles(Build(1, 1, 1, 1, 1, 1, 1, 1, 1)));
 
         [TestMethod]
+        public void TestExecute()
+        {
+            Tile t = new Tile();
+            t.SetValue(0);
+            CommandInvoker.Instance.Execute(
+                new GenericCommand<int>(new Tile[] { t }, setListTileValue, new int[] { t.Value }, new int[] { 1 })
+            );
+            Assert.AreEqual(1, t.Value);
+        }
+        
+        [TestMethod]
         public void TestUndo()
         {
             Tile t = new Tile();
@@ -69,3 +83,4 @@ namespace TestSudoku
     }
 
 }
+#endif

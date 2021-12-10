@@ -59,16 +59,21 @@ namespace LoneX.UQTR.Sudoku
             if(!isActivated) return;
             var _selectedTiles = TileSelector.SelectedTiles;
             var _from = new Color[_selectedTiles.Count];
-            for(int i = 0; i < _selectedTiles.Count ; i++) _from[i] = _selectedTiles[i].GetCurrentBaseColor();
-            var _to = new Color[]{fcp.color};
+            var _to = new Color[_selectedTiles.Count];
+            for(int i = 0; i < _selectedTiles.Count ; i++) 
+            {
+                _from[i] = _selectedTiles[i].GetCurrentBaseColor();
+                _to[i] = fcp.color;
+            }
+
+            //CODE pour pouvoir UNDO une commande j'ai 
             var _commande = new GenericCommand<Color>(_selectedTiles.ToArray(), UpdateColor, _from, _to);
             CommandInvoker.Instance.Execute(_commande);
-            
         }
 
         private void UpdateColor(object[] _sources,Color[] _colors)
         {
-            foreach(Tile tile in _sources) tile.BaseColorUpdate(_colors[0]);
+            for(int i = 0; i < _sources.Length ; i++) ((Tile) _sources[i]).BaseColorUpdate(_colors[i]);
         }
 
        #endregion
